@@ -31,15 +31,15 @@ export function EnrollmentTables() {
   }
 
   return (
-    <div className="grid grid-cols-2 gap-4 p-4">
+    <div className="grid grid-cols-2 gap-4 p-4 h-full">
       {/* Top States */}
-      <div className="bg-surface-alt border border-border rounded-lg overflow-hidden">
-        <div className="px-4 py-3 border-b border-border">
+      <div className="bg-surface-alt border border-border rounded-lg overflow-hidden flex flex-col">
+        <div className="px-4 py-3 border-b border-border shrink-0">
           <h2 className="text-sm font-semibold text-white">
             Top States by Enrollment
           </h2>
         </div>
-        <div className="overflow-auto max-h-96">
+        <div className="overflow-auto flex-1">
           <table className="w-full text-sm">
             <thead className="sticky top-0 bg-surface-alt">
               <tr className="text-gray-400 text-xs uppercase tracking-wider">
@@ -89,13 +89,13 @@ export function EnrollmentTables() {
       </div>
 
       {/* Top Counties */}
-      <div className="bg-surface-alt border border-border rounded-lg overflow-hidden">
-        <div className="px-4 py-3 border-b border-border">
+      <div className="bg-surface-alt border border-border rounded-lg overflow-hidden flex flex-col">
+        <div className="px-4 py-3 border-b border-border shrink-0">
           <h2 className="text-sm font-semibold text-white">
             Top Counties by Enrollment
           </h2>
         </div>
-        <div className="overflow-auto max-h-96">
+        <div className="overflow-auto flex-1">
           <table className="w-full text-sm">
             <thead className="sticky top-0 bg-surface-alt">
               <tr className="text-gray-400 text-xs uppercase tracking-wider">

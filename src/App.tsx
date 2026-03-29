@@ -15,11 +15,13 @@ function App() {
           </h1>
           <FilterPane />
         </aside>
-        <main className="flex-1 overflow-y-auto bg-surface">
-          <div className="h-[60vh] relative">
+        <main className="flex-1 flex flex-col overflow-hidden bg-surface">
+          <div className="h-[55vh] shrink-0 relative">
             <ChoroplethMap />
           </div>
-          <EnrollmentTables />
+          <div className="flex-1 min-h-0">
+            <EnrollmentTables />
+          </div>
         </main>
       </div>
     </QueryClientProvider>
