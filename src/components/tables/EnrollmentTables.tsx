@@ -31,7 +31,7 @@ export function EnrollmentTables() {
   }
 
   return (
-    <div className="grid grid-cols-2 gap-4 p-4 h-full">
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4 md:h-full">
       {/* Top States */}
       <div className="bg-surface-alt border border-border rounded-lg overflow-hidden flex flex-col">
         <div className="px-4 py-3 border-b border-border shrink-0">
