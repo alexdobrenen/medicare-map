@@ -1,0 +1,33 @@
+@import "tailwindcss";
+
+@theme {
+  --color-accent: #3b82f6;
+  --color-accent-light: #60a5fa;
+  --color-surface: #1a1a2e;
+  --color-surface-alt: #16162a;
+  --color-border: #2a2a45;
+}
+
+.mapboxgl-popup-content {
+  background: #16162a !important;
+  color: #e0e0e0 !important;
+  border: 1px solid #2a2a45;
+  border-radius: 8px !important;
+  padding: 8px 12px !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4) !important;
+}
+
+.mapboxgl-popup-tip {
+  border-top-color: #16162a !important;
+}
+
+body {
+  margin: 0;
+  background: var(--color-surface);
+  color: #e0e0e0;
+}
+
+#root {
+  width: 100%;
+  height: 100vh;
+}
