@@ -1,73 +1,59 @@
-# React + TypeScript + Vite
+# Medicare Map
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+An interactive choropleth map visualizing Medicare enrollment across US counties. Built with React, TypeScript, Mapbox GL, and Tailwind CSS.
 
-Currently, two official plugins are available:
+## Data Source
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+This app uses **real, live data** from the Centers for Medicare & Medicaid Services (CMS) public API.
 
-## React Compiler
+**Dataset:** [Medicare Monthly Enrollment](https://data.cms.gov/summary-statistics-on-beneficiary-enrollment/medicare-and-medicaid-reports/medicare-monthly-enrollment)
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- **API endpoint:** `https://data.cms.gov/data-api/v1/dataset/d7fabe1e-d19b-4333-9eff-e80e0643f2fd/data`
+- **Granularity:** County-level (identified by FIPS code)
+- **Year:** 2023 (annual summary)
+- **Records:** ~3,278 counties across all US states and territories
+- **No API key required** — CMS data is publicly accessible with CORS enabled
 
-## Expanding the ESLint configuration
+### What the data includes
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+Each county record contains:
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+| Field | Description |
+|-------|-------------|
+| `TOT_BENES` | Total Medicare beneficiaries |
+| `ORGNL_MDCR_BENES` | Beneficiaries enrolled in Original Medicare |
+| `MA_AND_OTH_BENES` | Beneficiaries enrolled in Medicare Advantage |
+| `AGE_*_BENES` | Enrollment broken down by age bracket (Under 25, 25-44, 45-64, 65-69, 70-74, 75-79, 80-84, 85-89, 90-94, 95+) |
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+CMS suppresses values below 11 enrollees (displayed as `*`) to protect beneficiary privacy. These counties appear as "Data Suppressed" in the app.
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+### How data is fetched
+
+1. On page load, the app requests all county-level records for 2023 from the CMS API
+2. The API returns a maximum of 1,000 records per page, so the app fetches 4 pages in parallel (~3,278 total records)
+3. When a state filter is applied, only that state's counties are fetched (typically a single page)
+4. Age bracket and plan type filters are applied client-side — no additional API calls needed
+5. Data is cached for 10 minutes using TanStack Query to avoid redundant requests
+
+### Geographic boundaries
+
+County boundaries come from the [us-atlas](https://github.com/topojson/us-atlas) npm package, which provides US Census Bureau TIGER/Line county geometries as TopoJSON (~89KB). Counties are matched to CMS enrollment data by their 5-digit FIPS code.
+
+## Local Development
+
+```bash
+npm install
+npm run dev
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+Requires a Mapbox access token in `.env.local`:
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
 ```
+VITE_MAPBOX_TOKEN=your_mapbox_token_here
+```
+
+Get a free token at [mapbox.com](https://account.mapbox.com/access-tokens/).
+
+## Deployment
+
+The app deploys to GitHub Pages via the included GitHub Actions workflow. The `VITE_MAPBOX_TOKEN` must be added as a repository secret under **Settings > Secrets and variables > Actions**.
