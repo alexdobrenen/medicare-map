@@ -6,7 +6,7 @@ import { STATE_FIPS_TO_ABBR } from '../../lib/fipsUtils'
 import { SearchableSelect } from './SearchableSelect'
 import zctaCountyCrosswalk from '../../data/zcta-county.json'
 import { useEnrollmentData } from '../../hooks/useEnrollmentData'
-// @ts-expect-error — us-zips is CJS with no type declarations
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 import usZips from 'us-zips/object'
 
 const crosswalk = zctaCountyCrosswalk as Record<string, string>

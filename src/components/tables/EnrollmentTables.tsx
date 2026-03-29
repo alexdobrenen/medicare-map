@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { useTableData } from '../../hooks/useTableData'
 import { useZipData } from '../../hooks/useZipData'
 import { useFilterStore } from '../../store/filterStore'
-// @ts-expect-error — us-zips is CJS with no type declarations
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 import usZips from 'us-zips/object'
 
 const zipCentroids = usZips as Record<
