@@ -3,15 +3,14 @@ import type { Feature, Geometry } from 'geojson'
 import { useEnrollmentData } from './useEnrollmentData'
 import { useCountyGeoJSON } from './useCountyGeoJSON'
 import { useFilterStore } from '../store/filterStore'
-import { padFips } from '../lib/fipsUtils'
+import { buildFips, STATE_FIPS_TO_ABBR } from '../lib/fipsUtils'
 import { computeValue } from '../lib/computeValue'
 import type { ChoroplethData } from '../types/map'
 
 export function useChoroplethData(): ChoroplethData | null {
   const { data: enrollmentRows, isLoading } = useEnrollmentData()
   const counties = useCountyGeoJSON()
-  const ageBracket = useFilterStore((s) => s.ageBracket)
-  const planType = useFilterStore((s) => s.planType)
+  const medicaidFilter = useFilterStore((s) => s.medicaidFilter)
   const countyFilter = useFilterStore((s) => s.county)
 
   return useMemo(() => {
@@ -21,20 +20,21 @@ export function useChoroplethData(): ChoroplethData | null {
     const countyNames = new Map<string, { county: string; state: string }>()
 
     for (const row of enrollmentRows) {
-      if (countyFilter && row.BENE_FIPS_CD !== countyFilter) continue
-      const fips = padFips(row.BENE_FIPS_CD)
-      const value = computeValue(row, ageBracket, planType)
+      const fips = buildFips(row.state, row.county)
+      if (countyFilter && fips !== countyFilter) continue
+      const value = computeValue(row, medicaidFilter)
       if (value !== null) {
         lookup.set(fips, value)
       }
-      countyNames.set(fips, {
-        county: row.BENE_COUNTY_DESC,
-        state: row.BENE_STATE_ABRVTN,
-      })
+      // Parse "County Name, State Name" from NAME field
+      const nameParts = row.NAME.split(', ')
+      const countyName = nameParts[0] ?? 'Unknown'
+      const stateAbbr = STATE_FIPS_TO_ABBR[row.state] ?? ''
+      countyNames.set(fips, { county: countyName, state: stateAbbr })
     }
 
     const features: Feature<Geometry>[] = counties.features.map((f) => {
-      const fips = padFips(String(f.id))
+      const fips = String(f.id).padStart(5, '0')
       const names = countyNames.get(fips)
       return {
         ...f,
@@ -58,5 +58,5 @@ export function useChoroplethData(): ChoroplethData | null {
       values,
       lookup,
     }
-  }, [enrollmentRows, isLoading, counties, ageBracket, planType, countyFilter])
+  }, [enrollmentRows, isLoading, counties, medicaidFilter, countyFilter])
 }

@@ -1,24 +1,27 @@
-export type AgeBracket =
+export type MedicaidFilter =
   | 'all'
-  | 'lt65'
-  | '65_69'
-  | '70_74'
-  | '75_79'
-  | '80_84'
-  | '85_plus'
+  | 'under_19'
+  | '19_to_64'
+  | '65_plus'
+  | 'male'
+  | 'female'
 
-export type PlanType = 'all' | 'original' | 'advantage'
+export interface SelectedZip {
+  zcta: string
+  latitude: number
+  longitude: number
+}
 
 export interface FilterState {
   state: string
   county: string
-  ageBracket: AgeBracket
-  planType: PlanType
+  medicaidFilter: MedicaidFilter
+  selectedZip: SelectedZip | null
   pendingState: string
   pendingCounty: string
-  pendingAgeBracket: AgeBracket
-  pendingPlanType: PlanType
+  pendingMedicaidFilter: MedicaidFilter
   setPending: (updates: Partial<PendingFields>) => void
+  setSelectedZip: (zip: SelectedZip | null) => void
   apply: () => void
   reset: () => void
 }
@@ -26,6 +29,5 @@ export interface FilterState {
 export interface PendingFields {
   pendingState: string
   pendingCounty: string
-  pendingAgeBracket: AgeBracket
-  pendingPlanType: PlanType
+  pendingMedicaidFilter: MedicaidFilter
 }

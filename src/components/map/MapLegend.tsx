@@ -14,7 +14,7 @@ export function MapLegend({ colorScale }: MapLegendProps) {
   return (
     <div className="absolute bottom-8 right-4 bg-surface/90 backdrop-blur-sm rounded-lg p-3 shadow-lg text-xs z-10 border border-border">
       <div className="font-semibold text-white mb-2">
-        Medicare Enrollees
+        Medicaid Coverage
       </div>
       {colors.map((color, i) => {
         const low = i === 0 ? 0 : quantiles[i - 1]

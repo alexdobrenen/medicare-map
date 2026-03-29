@@ -1,7 +1,7 @@
 import { StateSelect } from './StateSelect'
 import { CountySelect } from './CountySelect'
-import { AgeRangeFilter } from './AgeRangeFilter'
-import { PlanTypeFilter } from './PlanTypeFilter'
+import { ZipSelect } from './ZipSelect'
+import { MedicaidFilterSelect } from './MedicaidFilterSelect'
 import { FilterActions } from './FilterActions'
 
 export function FilterPane() {
@@ -9,8 +9,8 @@ export function FilterPane() {
     <div className="space-y-5">
       <StateSelect />
       <CountySelect />
-      <AgeRangeFilter />
-      <PlanTypeFilter />
+      <ZipSelect />
+      <MedicaidFilterSelect />
       <FilterActions />
     </div>
   )

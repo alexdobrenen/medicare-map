@@ -22,7 +22,7 @@ export function HoverTooltip({ info }: HoverTooltipProps) {
         <div className="text-gray-400">FIPS: {info.fips}</div>
         <div className="text-gray-200 font-medium">
           Enrolled:{' '}
-          {info.value !== null ? info.value.toLocaleString() : 'Suppressed'}
+          {info.value !== null ? info.value.toLocaleString() : 'No data'}
         </div>
       </div>
     </Popup>

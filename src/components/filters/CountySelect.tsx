@@ -2,6 +2,7 @@ import { useMemo } from 'react'
 import { useFilterStore } from '../../store/filterStore'
 import { useEnrollmentData } from '../../hooks/useEnrollmentData'
 import { SearchableSelect } from './SearchableSelect'
+import { buildFips, STATE_FIPS_TO_ABBR } from '../../lib/fipsUtils'
 
 export function CountySelect() {
   const pendingCounty = useFilterStore((s) => s.pendingCounty)
@@ -17,12 +18,14 @@ export function CountySelect() {
     ]
 
     for (const row of rows) {
-      const fips = row.BENE_FIPS_CD
+      const fips = buildFips(row.state, row.county)
       if (!seen.has(fips)) {
         seen.add(fips)
+        const nameParts = row.NAME.split(', ')
+        const stateAbbr = STATE_FIPS_TO_ABBR[row.state] ?? ''
         counties.push({
           value: fips,
-          label: `${row.BENE_COUNTY_DESC}, ${row.BENE_STATE_ABRVTN}`,
+          label: `${nameParts[0]}, ${stateAbbr}`,
         })
       }
     }

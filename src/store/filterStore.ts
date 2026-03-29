@@ -4,32 +4,32 @@ import type { FilterState } from '../types/filters'
 export const useFilterStore = create<FilterState>((set) => ({
   state: '',
   county: '',
-  ageBracket: 'all',
-  planType: 'all',
+  medicaidFilter: 'all',
+  selectedZip: null,
   pendingState: '',
   pendingCounty: '',
-  pendingAgeBracket: 'all',
-  pendingPlanType: 'all',
+  pendingMedicaidFilter: 'all',
 
   setPending: (updates) => set((s) => ({ ...s, ...updates })),
+
+  setSelectedZip: (zip) => set({ selectedZip: zip }),
 
   apply: () =>
     set((s) => ({
       state: s.pendingState,
       county: s.pendingCounty,
-      ageBracket: s.pendingAgeBracket,
-      planType: s.pendingPlanType,
+      medicaidFilter: s.pendingMedicaidFilter,
+      selectedZip: null,
     })),
 
   reset: () =>
     set({
       state: '',
       county: '',
-      ageBracket: 'all',
-      planType: 'all',
+      medicaidFilter: 'all',
+      selectedZip: null,
       pendingState: '',
       pendingCounty: '',
-      pendingAgeBracket: 'all',
-      pendingPlanType: 'all',
+      pendingMedicaidFilter: 'all',
     }),
 }))

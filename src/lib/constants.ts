@@ -1,4 +1,4 @@
-import type { AgeBracket } from '../types/filters'
+import type { MedicaidFilter } from '../types/filters'
 
 export const US_STATES = [
   { abbr: '', name: 'All States' },
@@ -55,28 +55,27 @@ export const US_STATES = [
   { abbr: 'WY', name: 'Wyoming' },
 ] as const
 
-export const AGE_BRACKET_FIELDS: Record<AgeBracket, string[]> = {
-  all: ['TOT_BENES'],
-  lt65: ['AGE_LT_25_BENES', 'AGE_25_TO_44_BENES', 'AGE_45_TO_64_BENES'],
-  '65_69': ['AGE_65_TO_69_BENES'],
-  '70_74': ['AGE_70_TO_74_BENES'],
-  '75_79': ['AGE_75_TO_79_BENES'],
-  '80_84': ['AGE_80_TO_84_BENES'],
-  '85_plus': ['AGE_85_TO_89_BENES', 'AGE_90_TO_94_BENES', 'AGE_GT_94_BENES'],
+export const MEDICAID_FILTER_FIELDS: Record<MedicaidFilter, string[]> = {
+  all: [
+    'C27007_004E',
+    'C27007_007E',
+    'C27007_010E',
+    'C27007_014E',
+    'C27007_017E',
+    'C27007_020E',
+  ],
+  under_19: ['C27007_004E', 'C27007_014E'],
+  '19_to_64': ['C27007_007E', 'C27007_017E'],
+  '65_plus': ['C27007_010E', 'C27007_020E'],
+  male: ['C27007_004E', 'C27007_007E', 'C27007_010E'],
+  female: ['C27007_014E', 'C27007_017E', 'C27007_020E'],
 }
 
-export const AGE_BRACKET_LABELS: Record<AgeBracket, string> = {
-  all: 'All Ages',
-  lt65: 'Under 65',
-  '65_69': '65 - 69',
-  '70_74': '70 - 74',
-  '75_79': '75 - 79',
-  '80_84': '80 - 84',
-  '85_plus': '85+',
-}
-
-export const PLAN_TYPE_LABELS: Record<string, string> = {
-  all: 'All Plans',
-  original: 'Original Medicare',
-  advantage: 'Medicare Advantage',
+export const MEDICAID_FILTER_LABELS: Record<MedicaidFilter, string> = {
+  all: 'All',
+  under_19: 'Under 19',
+  '19_to_64': '19 to 64',
+  '65_plus': '65 and Over',
+  male: 'Male',
+  female: 'Female',
 }

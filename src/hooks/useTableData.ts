@@ -2,9 +2,16 @@ import { useMemo } from 'react'
 import { useEnrollmentData } from './useEnrollmentData'
 import { useFilterStore } from '../store/filterStore'
 import { computeValue } from '../lib/computeValue'
+import { buildFips, STATE_FIPS_TO_ABBR } from '../lib/fipsUtils'
+import { US_STATES } from '../lib/constants'
+
+const ABBR_TO_NAME: Record<string, string> = Object.fromEntries(
+  US_STATES.filter((s) => s.abbr).map((s) => [s.abbr, s.name]),
+)
 
 export interface StateRow {
   state: string
+  stateName: string
   enrolled: number
 }
 
@@ -17,8 +24,7 @@ export interface CountyRow {
 
 export function useTableData() {
   const { data: rows } = useEnrollmentData()
-  const ageBracket = useFilterStore((s) => s.ageBracket)
-  const planType = useFilterStore((s) => s.planType)
+  const medicaidFilter = useFilterStore((s) => s.medicaidFilter)
   const countyFilter = useFilterStore((s) => s.county)
 
   return useMemo(() => {
@@ -28,25 +34,29 @@ export function useTableData() {
     const countyList: CountyRow[] = []
 
     for (const row of rows) {
-      if (countyFilter && row.BENE_FIPS_CD !== countyFilter) continue
-      const value = computeValue(row, ageBracket, planType)
+      const fips = buildFips(row.state, row.county)
+      if (countyFilter && fips !== countyFilter) continue
+      const value = computeValue(row, medicaidFilter)
       if (value === null) continue
 
-      // Aggregate by state
-      const st = row.BENE_STATE_ABRVTN
-      stateMap.set(st, (stateMap.get(st) ?? 0) + value)
+      const stateAbbr = STATE_FIPS_TO_ABBR[row.state] ?? row.state
+      stateMap.set(stateAbbr, (stateMap.get(stateAbbr) ?? 0) + value)
 
-      // County-level rows
+      const nameParts = row.NAME.split(', ')
       countyList.push({
-        fips: row.BENE_FIPS_CD,
-        county: row.BENE_COUNTY_DESC,
-        state: st,
+        fips,
+        county: nameParts[0] ?? 'Unknown',
+        state: stateAbbr,
         enrolled: value,
       })
     }
 
     const topStates: StateRow[] = [...stateMap.entries()]
-      .map(([state, enrolled]) => ({ state, enrolled }))
+      .map(([state, enrolled]) => ({
+        state,
+        stateName: ABBR_TO_NAME[state] ?? state,
+        enrolled,
+      }))
       .sort((a, b) => b.enrolled - a.enrolled)
       .slice(0, 50)
 
@@ -55,5 +65,5 @@ export function useTableData() {
       .slice(0, 50)
 
     return { topStates, topCounties }
-  }, [rows, ageBracket, planType, countyFilter])
+  }, [rows, medicaidFilter, countyFilter])
 }
