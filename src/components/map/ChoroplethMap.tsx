@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react'
 import Map from 'react-map-gl/mapbox'
-import type { MapLayerMouseEvent } from 'react-map-gl/mapbox'
+import type { MapMouseEvent } from 'react-map-gl/mapbox'
 import 'mapbox-gl/dist/mapbox-gl.css'
 
 import { useChoroplethData } from '../../hooks/useChoroplethData'
@@ -21,7 +21,7 @@ export function ChoroplethMap() {
       ? buildColorScale(choroplethData.values)
       : null
 
-  const onMouseMove = useCallback((event: MapLayerMouseEvent) => {
+  const onMouseMove = useCallback((event: MapMouseEvent) => {
     const feature = event.features?.[0]
     if (feature && feature.properties) {
       setHoverInfo({

@@ -1,14 +1,13 @@
 import { useMemo } from 'react'
 import { feature } from 'topojson-client'
-import type { Topology, GeometryCollection } from 'topojson-specification'
 import type { FeatureCollection, Geometry } from 'geojson'
-// @ts-expect-error us-atlas has no type declarations
-import countiesTopo from 'us-atlas/counties-10m.json'
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+import countiesTopo from 'us-atlas/counties-10m.json' with { type: 'json' }
 
 export function useCountyGeoJSON(): FeatureCollection<Geometry> {
   return useMemo(() => {
-    const topo = countiesTopo as Topology
-    const counties = topo.objects.counties as GeometryCollection
-    return feature(topo, counties) as FeatureCollection<Geometry>
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const topo = countiesTopo as any
+    return feature(topo, topo.objects.counties) as unknown as FeatureCollection<Geometry>
   }, [])
 }
